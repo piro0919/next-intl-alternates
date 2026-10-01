@@ -22,3 +22,31 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build:lib
+      - run: pnpm check:package
+
+  # The package claims node >=20 in engines. pnpm 11 itself needs Node 22.13,
+  # so it is installed standalone (with its own Node) and only the tests and
+  # the built output run on the matrix version.
+  node:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+          standalone: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm build:lib
+      - name: Load the built package
+        run: |
+          node -e "require('./dist/index.cjs').createAlternates"
+          node --input-type=module -e "import { createAlternates } from './dist/index.js'; createAlternates"
