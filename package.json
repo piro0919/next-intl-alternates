@@ -1,6 +1,6 @@
 {
   "name": "next-intl-alternates",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Build canonical and hreflang metadata for a next-intl site, including the pages that only exist in one language",
   "type": "module",
   "sideEffects": false,
