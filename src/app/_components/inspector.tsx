@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { createAlternates } from "@/index";
-import type { LocalePrefixMode } from "@/types";
+import type { Alternates, LocalePrefixMode } from "@/types";
 
 const LOCALES = ["en", "ja", "de"] as const;
 
@@ -66,7 +66,10 @@ export default function Inspector() {
   const [trailingSlash, setTrailingSlash] = useState(false);
   const locale = available[0] ?? defaultLocale;
 
-  const alternates = useMemo(() => {
+  /* A pathname typed with a dynamic segment, "/blog/[slug]", has no params
+     here, and the library throws on it rather than emit "[slug]" as a URL.
+     Show that message in place of the head. */
+  const result = useMemo((): { alternates: Alternates } | { error: string } => {
     const build = createAlternates({
       baseUrl: "https://example.com",
       defaultLocale,
@@ -76,7 +79,13 @@ export default function Inspector() {
       trailingSlash,
     });
 
-    return build({ availableLocales: available, locale, pathname });
+    try {
+      return {
+        alternates: build({ availableLocales: available, locale, pathname }),
+      };
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : String(error) };
+    }
   }, [
     available,
     defaultLocale,
@@ -209,12 +218,20 @@ export default function Inspector() {
               A page that exists in no language has nothing to annotate.
             </p>
           ) : null}
-          <p className="break-all text-zinc-300">
-            &lt;link rel=&quot;canonical&quot; href=&quot;
-            <span className="text-indigo-300">{alternates.canonical}</span>
-            &quot; /&gt;
-          </p>
-          {Object.entries(alternates.languages ?? {}).map(([tag, href]) => (
+          {"error" in result ? (
+            <p className="break-all text-amber-300">{result.error}</p>
+          ) : (
+            <p className="break-all text-zinc-300">
+              &lt;link rel=&quot;canonical&quot; href=&quot;
+              <span className="text-indigo-300">
+                {result.alternates.canonical}
+              </span>
+              &quot; /&gt;
+            </p>
+          )}
+          {Object.entries(
+            "error" in result ? {} : (result.alternates.languages ?? {}),
+          ).map(([tag, href]) => (
             <p className="break-all text-zinc-300" key={tag}>
               &lt;link rel=&quot;alternate&quot; hreflang=&quot;
               <span

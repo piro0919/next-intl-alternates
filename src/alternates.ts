@@ -2,9 +2,13 @@ import type { Alternates, AlternatesConfig, AlternatesOptions } from "./types";
 import { fillParams, localizedPathname, normalize, prefixFor } from "./url";
 
 /** The URL one locale uses for a route. */
-export function localeUrl(
-  config: AlternatesConfig,
-  { locale, params, pathname }: Omit<AlternatesOptions, "availableLocales">,
+export function localeUrl<L extends string, T extends string>(
+  config: AlternatesConfig<L>,
+  {
+    locale,
+    params,
+    pathname,
+  }: Omit<AlternatesOptions<L, T>, "availableLocales">,
 ): string {
   const {
     baseUrl,
@@ -39,14 +43,26 @@ export function localeUrl(
  * }
  * ```
  */
-export function createAlternates(
-  config: AlternatesConfig,
-): (options: AlternatesOptions) => Alternates {
-  const { defaultLocale, locales } = config;
+export function createAlternates<L extends string>(
+  config: AlternatesConfig<L>,
+): <T extends string, A extends string = string>(
+  options: AlternatesOptions<L, T, A>,
+) => Alternates {
+  const { defaultLocale } = config;
+  const locales: readonly string[] = config.locales;
 
   if (!locales.includes(defaultLocale)) {
     throw new Error(
       `next-intl-alternates: defaultLocale "${defaultLocale}" is not in locales [${locales.join(", ")}].`,
+    );
+  }
+
+  /* With domains, a locale's URL depends on which host serves it, and the
+     same locale can live on several. Guessing one would put a URL in the head
+     that the site does not serve. */
+  if (config.domains !== undefined) {
+    throw new Error(
+      "next-intl-alternates: domain-based routing (routing.domains) is not supported. Build each domain's URLs with localeUrl and that domain's baseUrl.",
     );
   }
 
@@ -57,9 +73,9 @@ export function createAlternates(
       );
     }
 
-    const available = (availableLocales ?? locales).filter((candidate) =>
-      locales.includes(candidate),
-    );
+    const available = (
+      (availableLocales as readonly string[] | undefined) ?? locales
+    ).filter((candidate) => locales.includes(candidate));
     const canonical = localeUrl(config, { locale, params, pathname });
     const mode =
       typeof config.localePrefix === "object"

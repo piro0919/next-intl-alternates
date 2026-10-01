@@ -3,9 +3,10 @@ export type {
   Alternates,
   AlternatesConfig,
   AlternatesOptions,
+  KnownLocale,
   LocalePrefix,
   LocalePrefixMode,
+  Params,
   Pathname,
   Routing,
 } from "./types";
-export { fillParams, localizedPathname, normalize, prefixFor } from "./url";

@@ -148,6 +148,34 @@ describe("createAlternates", () => {
     ).toThrow(/locale "fr"/);
   });
 
+  it("refuses domain-based routing instead of guessing a host", () => {
+    expect(() =>
+      createAlternates({
+        ...config,
+        domains: [
+          { defaultLocale: "en", domain: "example.com", locales: ["en"] },
+          { defaultLocale: "ja", domain: "example.jp", locales: ["ja"] },
+        ],
+      }),
+    ).toThrow(/domain-based routing \(routing.domains\) is not supported/);
+  });
+
+  it("throws when a dynamic segment has no value", () => {
+    expect(() =>
+      createAlternates(config)({ locale: "en", pathname: "/blog/[slug]" }),
+    ).toThrow(/no value for "slug"/);
+  });
+
+  it("drops an empty optional catch-all without leaving a trailing slash", () => {
+    const alternates = createAlternates(config)({
+      locale: "ja",
+      pathname: "/docs/[[...slug]]",
+    });
+
+    expect(alternates.canonical).toBe("https://example.com/ja/docs");
+    expect(alternates.languages?.en).toBe("https://example.com/docs");
+  });
+
   it("returns the canonical alone when the page exists in no locale at all", () => {
     expect(
       createAlternates(config)({
