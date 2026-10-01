@@ -50,6 +50,13 @@ assets/             # Space Grotesk subset drawn into the Open Graph card
   default-locale version.
 - **A `pathnames` entry missing a locale falls back to the route key** rather
   than emitting a URL from a map that does not mention it.
+- **A dynamic segment with no value throws**, as next-intl's `getPathname`
+  does, instead of leaving `[slug]` in a URL. An empty optional catch-all
+  `[[...slug]]` is dropped with the slash before it.
+- **`domains` throws in `createAlternates`.** A locale's URL there depends on
+  the host; guessing one puts a URL the site does not serve in the head.
+- **Only `createAlternates`, `localeUrl` and types are public.** The helpers in
+  `url.ts` are internal; tests import them from the source file.
 - **Types are structural.** The `Routing` type is the subset this reads, so
   passing next-intl's routing object works without importing next-intl and
   without pinning a version of it.
@@ -69,6 +76,7 @@ pnpm test        # vitest
 pnpm typecheck   # tsc --noEmit
 pnpm lint        # biome check
 pnpm build:lib   # tsup -> dist
+pnpm check:package # publint + attw on the built dist (run build:lib first)
 pnpm build       # next build (demo site)
 ```
 

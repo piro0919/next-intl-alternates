@@ -64,7 +64,18 @@ npm install next-intl-alternates
 ```
 
 It has no dependencies, and next-intl is not one either — it reads the routing
-object you already have.
+object you already have. Node 20 or later.
+
+### next-intl versions
+
+The routing object from `defineRouting` works as it is in next-intl 3.18 —
+where `defineRouting` arrived — through 4.x. The tests pass next-intl's own
+`defineRouting` output through and are run against 3.18.0, 3.26.5 and 4.14.8;
+the keys read here (`locales`, `defaultLocale`, `localePrefix` in both forms,
+`pathnames`, `domains`) have the same shape across them.
+
+next-intl treats a missing `localePrefix` as `"always"`; this package treats it
+as `"as-needed"`. Set `localePrefix` in your routing explicitly so both agree.
 
 ## `createAlternates(config)`
 
@@ -86,6 +97,18 @@ It returns a function to call per page:
 | `params` | `{}` | values for the dynamic segments |
 | `availableLocales` | every locale | the locales this page exists in |
 
+A dynamic segment with no value in `params` throws, as next-intl's
+`getPathname` does, rather than putting `/blog/[slug]` in the head. An optional
+catch-all, `[[...slug]]`, with no value is dropped: `/docs/[[...slug]]` becomes
+`/docs`. A catch-all takes the array Next passes in `params`
+(`{ slug: ["guides", "setup"] }`) or a string with slashes in it; each segment
+is escaped on its own.
+
+When `locales` in the routing are literal types — as `defineRouting` makes
+them — `locale` and `availableLocales` are checked against them at compile
+time. A plain `string`, such as a route param, is accepted and checked at
+runtime.
+
 ```ts
 getAlternates({
   locale,
@@ -106,13 +129,11 @@ localeUrl(config, { locale: "ja", pathname: "/about" });
 // "https://example.com/ja/about"
 ```
 
-`prefixFor`, `localizedPathname`, `fillParams` and `normalize` are exported too,
-for callers that want the pieces rather than the whole.
-
 ## Not covered
 
-next-intl's `domains` — a locale served from its own hostname — is not handled.
-Build those URLs with `localeUrl` against each domain's `baseUrl`.
+next-intl's `domains` — a locale served from its own hostname — is not handled,
+and `createAlternates` throws when the routing has it. Build those URLs with
+`localeUrl` against each domain's `baseUrl`.
 
 ## Licence
 
