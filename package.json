@@ -23,7 +23,7 @@
     "dist"
   ],
   "engines": {
-    "node": ">=20.20.2"
+    "node": ">=24.21.0"
   },
   "keywords": [
     "next-intl",
@@ -45,7 +45,7 @@
     "url": "https://github.com/piro0919/next-intl-alternates/issues"
   },
   "author": "piro0919 <piro.haniwa@gmail.com> (https://kkweb.io/)",
-  "packageManager": "pnpm@11.28.3",
+  "packageManager": "pnpm@12.8.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -77,7 +77,7 @@
     "tailwindcss": "^4.3.3",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.7"
+    "vitest": "^5.0.3"
   },
   "homepage": "https://next-intl-alternates.kkweb.io/"
 }
