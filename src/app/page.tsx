@@ -134,6 +134,12 @@ export default function Home() {
           >
             GitHub
           </a>
+          <a
+            className="hover:text-indigo-300"
+            href="https://buymeacoffee.com/piro0919"
+          >
+            Buy Me a Coffee
+          </a>
           <a className="hover:text-indigo-300" href="https://kkweb.io/">
             kkweb.io
           </a>
