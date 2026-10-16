@@ -9,8 +9,9 @@ export const size = { height: 630, width: 1200 };
 
 export const contentType = "image/png";
 
-const TITLE = "hreflang that";
-const TITLE_SECOND = "survives review.";
+const TITLE = "next-intl-alternates";
+const DESCRIPTION =
+  "Builds canonical and hreflang metadata for a next-intl site.";
 
 export default async function Image() {
   /* The same Space Grotesk the site uses for headings, cut down to Latin.
@@ -39,59 +40,87 @@ export default async function Image() {
     })),
   ];
 
+  /* Same layout as the other package cards on kkweb.io: name, one line and
+     the domain on the left, what the package does on the right. */
   return new ImageResponse(
     <div
       style={{
-        background: "#0a0d16",
+        alignItems: "center",
+        background: "#0b0b0f",
         color: "#ffffff",
         display: "flex",
-        flexDirection: "column",
         height: "100%",
-        justifyContent: "center",
         padding: "0 80px",
         width: "100%",
       }}
     >
       <div
         style={{
-          color: "#818cf8",
           display: "flex",
-          fontSize: 26,
-          letterSpacing: 4,
+          flexDirection: "column",
+          justifyContent: "center",
+          width: 600,
         }}
       >
-        NEXT-INTL-ALTERNATES
-      </div>
-      <div style={{ display: "flex", fontSize: 68, marginTop: 24 }}>
-        {TITLE}
-      </div>
-      <div style={{ color: "#a1a1aa", display: "flex", fontSize: 68 }}>
-        {TITLE_SECOND}
+        <div style={{ display: "flex", fontSize: 54, letterSpacing: -1 }}>
+          {TITLE}
+        </div>
+        <div
+          style={{
+            color: "#a1a1aa",
+            display: "flex",
+            fontSize: 30,
+            lineHeight: 1.4,
+            marginTop: 28,
+          }}
+        >
+          {DESCRIPTION}
+        </div>
+        <div
+          style={{
+            color: "#71717a",
+            display: "flex",
+            fontSize: 26,
+            marginTop: 48,
+          }}
+        >
+          kkweb.io
+        </div>
       </div>
 
       <div
         style={{
-          background: "#0d1120",
-          border: "1px solid #1e213a",
-          borderRadius: 20,
+          alignItems: "center",
           display: "flex",
-          flexDirection: "column",
-          gap: 14,
-          marginTop: 46,
-          padding: "28px 32px",
+          flex: 1,
+          justifyContent: "flex-end",
         }}
       >
-        {lines.map((line) => (
-          <div
-            key={line.tag}
-            style={{ display: "flex", fontSize: 21, whiteSpace: "pre" }}
-          >
-            <span style={{ color: "#52525b" }}>&lt;link </span>
-            <span style={{ color: line.tone }}>{line.tag}</span>
-            <span style={{ color: "#52525b" }}> </span>
-            <span style={{ color: "#d4d4d8" }}>{line.href}</span>
-          </div>
-        ))}
+        <div
+          style={{
+            background: "#15151c",
+            border: "1px solid #26262f",
+            borderRadius: 20,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+            padding: "26px 28px",
+          }}
+        >
+          {lines.map((line) => (
+            <div
+              key={line.tag}
+              style={{ display: "flex", fontSize: 22, whiteSpace: "pre" }}
+            >
+              <span style={{ color: line.tone, display: "flex", width: 128 }}>
+                {line.tag}
+              </span>
+              <span style={{ color: "#d4d4d8" }}>
+                {new URL(line.href).pathname}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>,
     {
