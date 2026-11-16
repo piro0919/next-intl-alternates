@@ -79,23 +79,23 @@ as `"as-needed"`. Set `localePrefix` in your routing explicitly so both agree.
 
 ## `createAlternates(config)`
 
-| Key | | |
-| ---- | ---- | ---- |
-| `baseUrl` | — | the origin, the one thing next-intl's routing has no reason to know |
-| `locales` | — | from `routing` |
-| `defaultLocale` | — | from `routing` |
-| `localePrefix` | `"as-needed"` | from `routing`; the `{ mode, prefixes }` form works too |
-| `pathnames` | — | from `routing`, when you use localized pathnames |
-| `trailingSlash` | `false` | match Next's option of the same name |
+| Key             |               |                                                                     |
+| --------------- | ------------- | ------------------------------------------------------------------- |
+| `baseUrl`       | —             | the origin, the one thing next-intl's routing has no reason to know |
+| `locales`       | —             | from `routing`                                                      |
+| `defaultLocale` | —             | from `routing`                                                      |
+| `localePrefix`  | `"as-needed"` | from `routing`; the `{ mode, prefixes }` form works too             |
+| `pathnames`     | —             | from `routing`, when you use localized pathnames                    |
+| `trailingSlash` | `false`       | match Next's option of the same name                                |
 
 It returns a function to call per page:
 
-| Key | | |
-| ---- | ---- | ---- |
-| `locale` | — | the locale being rendered |
-| `pathname` | — | the route: `/about`, or `/blog/[slug]` |
-| `params` | `{}` | values for the dynamic segments |
-| `availableLocales` | every locale | the locales this page exists in |
+| Key                |              |                                        |
+| ------------------ | ------------ | -------------------------------------- |
+| `locale`           | —            | the locale being rendered              |
+| `pathname`         | —            | the route: `/about`, or `/blog/[slug]` |
+| `params`           | `{}`         | values for the dynamic segments        |
+| `availableLocales` | every locale | the locales this page exists in        |
 
 A dynamic segment with no value in `params` throws, as next-intl's
 `getPathname` does, rather than putting `/blog/[slug]` in the head. An optional
